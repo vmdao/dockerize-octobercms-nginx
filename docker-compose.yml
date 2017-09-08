@@ -1,0 +1,31 @@
+version: '2'
+services:
+    nginx:
+        image: nginx:latest
+        volumes:
+            - ./config/nginx:/etc/nginx/conf.d
+            - ./src:/var/www/html
+        ports: 
+            - 9009:80
+        links:
+            - october
+        restart: always
+    october:
+        image: dragontek/octobercms:7.1-fpm
+        ports: 
+            - "9006:9000"
+        volumes: 
+            - ./src:/var/www/html
+            - ./config/php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+        links:
+            - mysql
+        restart: always
+    mysql: 
+        image: mysql:latest
+        volumes: 
+            - ./data/db-data:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=Abc@#123456
+            - MYSQL_DATABASE=octoberdb_blog
+        restart: always
+  
